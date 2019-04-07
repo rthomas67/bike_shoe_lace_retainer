@@ -9,13 +9,20 @@ upperClipCloseAngle=-9;
 
 clipCoreInnerDia=7;
 
-clipLength=80;
+clipLength=85;
 
-laceCutHoleDia=3;
-laceCutHoleSpacing=22;
-laceCutHolePathDia=clipCoreInnerDia*1.4;
-laceCutHolePathSquashFactorX=1.5;
-laceCutHolePathSquashFactorY=0.7;
+// size of the hole through which the laces pass
+laceCutHoleDia=5;
+
+laceCutHoleSpacing=21;
+
+// the angle, relative to the end, of the lace hole alignment
+laceCutHoleSpiralAngle=20;
+
+laceCutHolePathDia=clipCoreInnerDia*1.7;
+laceCutHoleShift=clipCoreInnerDia/5;
+laceCutHolePathSquashFactorX=1.5+0;
+laceCutHolePathSquashFactorY=0.7+0;
 
 clipOuterDia=clipCoreInnerDia+clipThickness*2;
 numberOfLaceCutHoles = round(clipLength/laceCutHoleSpacing);
@@ -29,11 +36,13 @@ $fn=50;
 difference() {
     linear_extrude(height = clipLength, center = false, convexity = 10, twist = 0)
         clipShape();
-   for (holeNum = [0 : 1 : numberOfLaceCutHoles-1]) {
-        translate([0,0,firstLaceCutHoleOffset+laceCutHoleSpacing*holeNum])
-            scale([laceCutHolePathSquashFactorX,
-                    laceCutHolePathSquashFactorY,1])
-                torus(laceCutHoleDia, laceCutHolePathDia);
+    for (holeNum = [0 : 1 : numberOfLaceCutHoles-1]) {
+            translate([0,-laceCutHoleShift,
+                    firstLaceCutHoleOffset+laceCutHoleSpacing*holeNum])
+                scale([laceCutHolePathSquashFactorX,
+                        laceCutHolePathSquashFactorY,1])
+        rotate([0,laceCutHoleSpiralAngle,0])
+                    torus(laceCutHoleDia, laceCutHolePathDia);
     }
 }
 
